@@ -3,6 +3,11 @@ cr_check_packages()
 
 finalYear <- 2022
 
+## NOTE: this script is provided so as to illustrate the importation
+## and broad processing steps taken in preparing the data for
+## modelling. Access to the primary database and datasets is not
+## provided within this repository. Access to the primary data can be
+## requested by emailing the senior author directly.
 
 ## Manta
  {

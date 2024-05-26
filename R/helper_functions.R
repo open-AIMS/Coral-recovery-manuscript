@@ -36,6 +36,16 @@ cr_check_packages <- function() {
 }
 
 
+cr_paths <- function() {
+  if (!dir.exists("../data")) dir.create("../data")
+  if (!dir.exists("../data/processed")) dir.create("../data/processed")
+  if (!dir.exists("../data/modelled")) dir.create("../data/modelled")
+  if (!dir.exists("../data/spatial")) dir.create("../data/spatial")
+  if (!dir.exists("../outputs")) dir.create("../outputs")
+  if (!dir.exists("../outputs/figures")) dir.create("../outputs/figures")
+}
+
+
 COTScategories = function(x) {
     case_when(
         x == 0 ~ 'Zero',
