@@ -56,7 +56,7 @@ Step through each of the lines of `00_main.R` (first ensuring that the
 
    This script produces the following outputs:
 
-   - `../outputs/figures/Disturbances_all_no_label_transposed.pdf`
+   - `../outputs/figures/figure_2.pdf`
 
 6. Run the `30_disturbance_severe_figure.R` script in order to
    generate Figure 3.
@@ -71,7 +71,7 @@ Step through each of the lines of `00_main.R` (first ensuring that the
 
    This script produces the following outputs:
 
-   - `../outputs/figures/Disturbances_severe_compilation_newA_2021.pdf`
+   - `../outputs/figures/figure_3.pdf`
    
 7. Explore the `40_coral_trends_models.R` script in order to generate
    the models underlying Figure 4.
@@ -92,6 +92,56 @@ Step through each of the lines of `00_main.R` (first ensuring that the
 
    This script produces the following outputs:
 
-   - `../outputs/figures/threePanels_brms.beta.ry.disp_.pdf`
+   - `../outputs/figures/figure_4.pdf`
    
+9. Run the `50_disturbance_year_figure.R` script in order to generate
+   Figure 5.
 
+   This script takes the following inputs:
+
+   - `../data/processed/manual recovery indiv manta reefs_2022.csv`
+   - `../data/processed/manta tow by reef 2021.csv`
+   - `../data/processed/220509 bleaching intervals.csv`
+   - `../data/processed/cots.interval.outbreak.csv`
+   - `../data/processed/cyclone.interval.RData`
+   
+   This script produces the following outputs:
+
+   - `../outputs/figures/figure_5.pdf`
+   - `../outputs/figures/figure_5.png`
+
+10. Run the `60_reef_recovery_figure.R` script in order to generate
+   Figure 6.
+
+   This script takes the following inputs:
+
+   - `../data/processed/manual recovery indiv manta reefs_2022.csv`
+
+   This script produces the following outputs:
+
+   - `../outputs/figures/figure_6.pdf`
+   - `../outputs/figures/figure_6.png`
+
+11. Run the `70_recovery_rate_figure.R` script in order to generate
+   Figure 7.
+
+   This script takes the following inputs:
+
+   - `../data/processed/manual recovery indiv manta reefs_2022.csv`
+
+   This script produces the following outputs:
+
+   - `../outputs/figures/figure_7.pdf`
+   - `../outputs/figures/figure_7.png`
+
+12. Run the `80_drivers_pf_recovery_figure.R` script in order to generate
+   Figure 8.
+
+   This script takes the following inputs:
+
+   - `../data/processed/manual recovery indiv manta reefs_2022.csv`
+
+   This script produces the following outputs:
+
+   - `../outputs/figures/figure_8.pdf`
+   - `../outputs/figures/figure_8.png`
