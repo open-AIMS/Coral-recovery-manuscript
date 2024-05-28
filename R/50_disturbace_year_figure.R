@@ -391,6 +391,12 @@ refit_models <- FALSE
         sd = sd(perc.reefs.disturb),
         se = sd / sqrt(length(perc.reefs.disturb))
       )
+    reefs.with.disturbance.dec.box <-
+      reefs.with.disturbance.dec |>
+      dplyr::select(Dist.Decade, perc.reefs.disturb) |> 
+      group_by(Dist.Decade) |>
+      summarise_draws(
+          q = ~ boxplot.stats(.x)$stats) 
   }
   ## Figure
   {
@@ -417,6 +423,35 @@ refit_models <- FALSE
         )
 
     perc.reefs.disturb
+
+    
+    perc.reefs.disturb.alt <-
+      reefs.with.disturbance.dec.box |>
+      filter(Dist.Decade != "NA") |> 
+      ggplot(aes(x = Dist.Decade, y = q.3)) +
+      geom_boxplot(aes(x = Dist.Decade, y = q.3,
+        lower = q.2, upper = q.4,
+        middle = q.3,
+        ymin = q.1, ymax = q.5),
+        stat = "Identity",
+        fill = "grey",
+        width = 0.6) +
+        geom_text(x = 1, y = -0.5, label = "(348)", size = 2) +
+        geom_text(x = 2, y = -0.5, label = "(309)", size = 2) +
+        geom_text(x = 3, y = -0.5, label = "(258)", size = 2) +
+        geom_text(x = 4, y = -0.5, label = "(204)", size = 2) +
+      scale_y_continuous("Percent survey reefs with disturbances",
+        limits = c(0, 30)) +
+        scale_x_discrete("Decade of survey") +
+        ggtitle("c)") +
+        theme_classic() +
+        theme(
+          legend.position = c(0.275, 0.95),
+          legend.text = element_text(size = 7.5),
+          legend.key.size = unit(0.5, "cm")
+        )
+
+    perc.reefs.disturb.alt
   }
 }
 
@@ -831,7 +866,7 @@ refit_models <- FALSE
   }
   ## Alternative figure
   {
-    dist_int <- 
+    dist_int.alt <- 
       bleach.interval.box |>
       mutate(Disturbance = "Bleaching") |>
       rbind(cots.interval.outbreak.box |>
@@ -842,8 +877,10 @@ refit_models <- FALSE
         Decade == "1980" ~ "85 to 90",
         Decade == "1990" ~ "91 to 00",
         Decade == "2000" ~ "01 to 10",
-        Decade == "2010" ~ "11 to 20",
-        Decade == "2020" ~ "21 to 30",
+        Decade == "2010" & Disturbance == "COTS" ~ "11 to 20",
+        Decade == "2010" & Disturbance == "Cyclone" ~ "01 to 10",
+        Decade == "2020" & Disturbance == "COTS" ~ "21 to 30",
+        Decade == "2020" & Disturbance == "Cyclone" ~ "11 to 20",
         .default = Decade
       )) |>
       filter(Decade != "21 to 30") |>
@@ -855,37 +892,33 @@ refit_models <- FALSE
         ) |>
       ungroup()
     
-    dist_int <-
-      dist_int |>
-      full_join(dist_int |>
-                  expand(Decade, Disturbance))
-    dist_int |> mutate(across(everything(), ~ replace(is.na, 0)))
-    
-    replace(dist_int, is.na(dist_int), 0)
-    
-      na_replace(0)
-      replace(is.na(.), 0)
-      replace_na(list(everything() = 0))
-    
+    dist_int.alt <-
+      dist_int.alt |>
+      full_join(dist_int.alt |>
+                  expand(Decade, Disturbance)) #|> 
+      ## mutate(across(where(is.numeric), ~replace_na(.x, 0)))
 
-    modelled.combined.interval.plot <-
-      dist_int |>
-      ggplot(aes(x = Decade, fill = Disturbance)) +
 
-  geom_boxplot(aes(x = Decade, y = q.3,
-                   lower = q.2, upper = q.4,
-                   middle = q.3,
-                   ymin = q.1, ymax = q.5),
-               stat = "Identity") +
+    modelled.combined.interval.plot.alt <-
+      dist_int.alt |>
+      ggplot(aes(x = Decade, fill = Disturbance, colour = Disturbance)) +
+      geom_boxplot(aes(x = Decade, y = q.3,
+        lower = q.2, upper = q.4,
+        middle = q.3,
+        ymin = q.1, ymax = q.5),
+        stat = "Identity",
+        width = 0.6) +
       ggtitle("d)") +
       scale_y_continuous("Disturbance interval (years)") + # ,breaks=c(0,2,4,6,8,10))+
       scale_x_discrete("Decade of first disturbance") + # ,labels=c("85 to 90","91 to 00","01 to 10","11 to 20"))+
       # scale_fill_manual(values=c('firebrick3','seagreen','blue3'))+
       ## scale_fill_brewer(palette = "YlGnBu", type = "qual", direction = 1) +
       scale_fill_manual(breaks = c("Bleaching", "COTS", "Cyclone"),
+        values = c(bleaching_palette[3], cots_palette[1], cyclone_palette[2]))+
+      scale_colour_manual(breaks = c("Bleaching", "COTS", "Cyclone"),
         values = c(bleaching_palette[5], cots_palette[2], cyclone_palette[3]))+
-      geom_text(aes(x = 0.75, y = 0, label = "**"), color = "black", size = 5) +
-      geom_text(aes(x = 4, y = 0, label = "**"), color = "black", size = 5) +
+      geom_text(aes(x = 0.75, y = 0, label = "**"), color = bleaching_palette[5], size = 5) +
+      geom_text(aes(x = 4, y = 0, label = "**"), color = cots_palette[2], size = 5) +
       theme_classic() +
       theme(
         legend.position = c(0.8, 0.9),
@@ -894,7 +927,18 @@ refit_models <- FALSE
         legend.key.width = unit(0.25, "cm"),
         legend.key.height = unit(0.25, "cm")
       )
-    modelled.combined.interval.plot
+
+    modelled.combined.interval.plot.alt <-
+    modelled.combined.interval.plot.alt +
+      annotate(geom = "rect", xmin = 1.5, xmax = 2.5, ymin = -Inf, ymax = Inf, fill = "gray40", alpha = 0.1) +
+      annotate(geom = "rect", xmin = 3.5, xmax = 4.5, ymin = -Inf, ymax = Inf, fill = "gray40", alpha = 0.1) +
+      scale_y_continuous("Disturbance interval (years)", expand = c(0, 0)) + # ,breaks=c(0,2,4,6,8,10))+
+      theme(
+        panel.grid.minor.x = element_line(),
+        legend.position = c(0.99, 1),
+        legend.justification = c(1, 1),
+        legend.background = element_blank()
+      )
 
     ## cvd_grid(modelled.combined.interval.plot)
   }
@@ -920,4 +964,20 @@ refit_models <- FALSE
      height = 20, width = 18, units = "cm"
    )
    
+   multipanel.fig.alt <-
+     (plot3 | rel.coral.loss.thru.time.plot) /
+     (perc.reefs.disturb.alt | modelled.combined.interval.plot.alt)
+
+   multipanel.fig.alt
+
+   ggsave(
+     filename = "../outputs/figures/figure_5.alt.png",
+     multipanel.fig.alt,
+     height = 20, width = 18, units = "cm", dpi = 600
+   )
+   ggsave(
+     filename = "../outputs/figures/figure_5.alt.pdf",
+     multipanel.fig.alt,
+     height = 20, width = 18, units = "cm"
+   )
  }
