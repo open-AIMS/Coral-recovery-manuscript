@@ -9,12 +9,21 @@ Code repository associated with analyses and Figures in Emslie et al
 /root
 |- data
 |   |- processed
+|   |- spatial
 |   |- modelled
 |- R
    |- 00_main.R
    |- 10_get_data.R
+   |- 20_disturbance_all_figure.R
+   |- 30_disturbance_severe_figure.R
+   |- 40_coral_trends_modells.R
+   |- 45_coral_trends_figure.R
+   |- 50_disturbance_year_figure.R
+   |- 60_reef_recovery_figure.R
+   |- 70_recovery_rate_figure.R
+   |- 80_drivers_pf_recovery_figure.R
 |- outputs
-   |- figures.R
+   |- figures
 
 ```
 
