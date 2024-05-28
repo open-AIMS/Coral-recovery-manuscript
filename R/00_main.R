@@ -22,7 +22,7 @@ source("30_disturbance_severe_figure.R")
 ## to model coral cover. Access to the input data is not provided
 ## within this repository. Access to the primary data can be requested
 ## by emailing the senior author directly.
-source("40_coral_trends_modells.R")
+source("40_coral_trends_models.R")
 source("45_coral_trends_figure.R")
 
 ## Figure 5

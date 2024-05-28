@@ -6,34 +6,44 @@ Code repository associated with analyses and Figures in Emslie et al
 
 # Important notes
 
-This codebase works in situ when all of the inputs are available and
-in the correct locations (see file tree below).
+This codebase works in situ when all of the inputs are available /
+accessable and in the correct locations (see file tree below). As some
+of these input sources are either internal AIMS databases or else
+require extensive context to avoid misuse, access is not provided as
+part of this repository. Such access can only provided via a request
+to the senior author (m.emslie@aims.gov.au).
 
+Nevertheless, scripts that end with `_figure.R` can be directly run
+from this repository as they only utilize derived data sets that are
+provided herein.
 
+In the following tree, italised items are not available in this repo.
 
 ```
 /root
 |- data
 |   |- processed
-|   |  |- spatial_3Zone.RData
+|   |  |- _manta.sum.RData_
+|   |  |- _manta.tow.RData_
 |   |  |- cots.sum.all_3Zone.RData
 |   |  |- bleaching.sum.all_3Zone.RData
 |   |  |- cyclones.sum.all_3Zone.RData
 |   |- spatial
+|   |  |- spatial_3Zone.RData
 |   |- modelled
 |- R
-   |- 00_main.R
-   |- 10_get_data.R
-   |- 20_disturbance_all_figure.R
-   |- 30_disturbance_severe_figure.R
-   |- 40_coral_trends_modells.R
-   |- 45_coral_trends_figure.R
-   |- 50_disturbance_year_figure.R
-   |- 60_reef_recovery_figure.R
-   |- 70_recovery_rate_figure.R
-   |- 80_drivers_pf_recovery_figure.R
+|  |- 00_main.R
+|  |- 10_get_data.R
+|  |- 20_disturbance_all_figure.R
+|  |- 30_disturbance_severe_figure.R
+|  |- 40_coral_trends_models.R
+|  |- 45_coral_trends_figure.R
+|  |- 50_disturbance_year_figure.R
+|  |- 60_reef_recovery_figure.R
+|  |- 70_recovery_rate_figure.R
+|  |- 80_drivers_pf_recovery_figure.R
 |- outputs
-   |- figures
+|  |- figures
 
 ```
 
