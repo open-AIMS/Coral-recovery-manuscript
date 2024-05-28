@@ -3,7 +3,7 @@ cr_check_packages()
 
 refit_models <- FALSE
 
-## Year of disturbance component
+## panel a) Year of disturbance component
 {
   ## Load data
   {
@@ -946,8 +946,8 @@ refit_models <- FALSE
 }
 
 ##  combine into multi-panel fig for publications
- {
-   multipanel.fig <-
+{
+  multipanel.fig <-
      (plot3 | rel.coral.loss.thru.time.plot) /
      (perc.reefs.disturb | modelled.combined.interval.plot)
 
@@ -980,4 +980,4 @@ refit_models <- FALSE
      multipanel.fig.alt,
      height = 20, width = 18, units = "cm"
    )
- }
+}

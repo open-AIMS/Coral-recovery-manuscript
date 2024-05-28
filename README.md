@@ -17,20 +17,45 @@ Nevertheless, scripts that end with `_figure.R` can be directly run
 from this repository as they only utilize derived data sets that are
 provided herein.
 
-In the following tree, italised items are not available in this repo.
+All of the data sources provided in this repository are also provided
+in the associated dryad page (**link**). If wishing to run code in this
+repository, you should move the files into position after cloning a
+local copy of this repository.
+
+In the following tree, items surrounded by underscores are not
+available in this repo. Further, items surrounded by asterisks are
+only available via dyrad due to their large size.
 
 ```
 /root
 |- data
 |   |- processed
+|   |  |- all.reefs.cyclones.RData
+|   |  |- 220509 bleaching intervals.csv
+|   |  |- bleaching.sum.all_3Zone.RData
+|   |  |- bleaching.full_3Zone.RData
+|   |  |- cots.interval.outbreak.csv
+|   |  |- cots.sum.all_3Zone.RData
+|   |  |- cots.full_3Zone.RData
+|   |  |- cyclone.interval.RData
+|   |  |- cyclones.sum.all_3Zone.RData
+|   |  |- cyclones.full_3Zone.RData
 |   |  |- _manta.sum.RData_
 |   |  |- _manta.tow.RData_
-|   |  |- cots.sum.all_3Zone.RData
-|   |  |- bleaching.sum.all_3Zone.RData
-|   |  |- cyclones.sum.all_3Zone.RData
+|   |  |- manual recovery indiv manta reefs_2022.csv
+|   |  |- manta tow by reef 2021.csv
 |   |- spatial
 |   |  |- spatial_3Zone.RData
 |   |- modelled
+|   |  |- *bleach.interval.brm.RData*
+|   |  |- *cots.interval.outbreak.brm.RData*
+|   |  |- *cyclones.interval.brm.RData*
+|   |  |- *mod.northern_brms.beta.ry.disp.RData*
+|   |  |- *mod.central_brms.beta.ry.disp.RData*
+|   |  |- *mod.southern_brms.beta.ry.disp.RData*
+|   |  |- *post.dist.cover.brm.RData*
+|   |  |- *recovery.brm.RData*
+|   |  |- *rel.coral.loss.brm.RData*
 |- R
 |  |- 00_main.R
 |  |- 10_get_data.R
@@ -71,6 +96,17 @@ Step through each of the lines of `00_main.R` (first ensuring that the
    primary database and datasets is not provided within this
    repository. Access to the primary data can be requested by emailing
    the senior author directly.
+
+   This script produces the following outputs:
+   
+   - `../data/processed/manta.sum.RData`
+   - `../data/processed/manta.tow.RData`
+   - `../data/modelled/bleaching.full_3Zone.RData`
+   - `../data/modelled/bleaching.sum.all_3Zone.RData`)
+   - `../data/modelled/cots.full_3Zone.RData`
+   - `../data/modelled/cots.sum.all_3Zone.RData`
+   - `../data/modelled/cyclones.full_3Zone.RData`
+   - `../data/modelled/cyclones.sum.all_3Zone.RData`
 
 5. Run the `20_disturbance_all_figure.R` script in order to generate
    Figure 2.
