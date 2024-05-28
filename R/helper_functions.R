@@ -36,6 +36,7 @@ cr_check_packages <- function() {
   require(DHARMa)
   require(emmeans)
   require(tidybayes)
+  require(mgcv)
 }
 
 
