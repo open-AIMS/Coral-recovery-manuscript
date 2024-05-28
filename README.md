@@ -4,11 +4,21 @@ Readme
 Code repository associated with analyses and Figures in Emslie et al
 (2024) "Increasing disturbance frequency undermines coral recovery"
 
+# Important notes
+
+This codebase works in situ when all of the inputs are available and
+in the correct locations (see file tree below).
+
+
 
 ```
 /root
 |- data
 |   |- processed
+|   |  |- spatial_3Zone.RData
+|   |  |- cots.sum.all_3Zone.RData
+|   |  |- bleaching.sum.all_3Zone.RData
+|   |  |- cyclones.sum.all_3Zone.RData
 |   |- spatial
 |   |- modelled
 |- R
@@ -26,7 +36,6 @@ Code repository associated with analyses and Figures in Emslie et al
    |- figures
 
 ```
-
 
 
 # Analysis steps
