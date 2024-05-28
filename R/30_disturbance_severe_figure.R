@@ -1,29 +1,31 @@
 source("helper_functions.R")
 cr_check_packages()
 
-finalYear <- 2022
 
-## Start with table of disturbances
-## ---- LoadData
+## Load Data
 {
-  load(file='../data/modelled/bleaching.full_3Zone.RData')
-  load(file='../data/modelled/cots.full_3Zone.RData')
-  load(file='../data/modelled/cyclones.full_3Zone.RData')
-  load(file='../data/processed/all.reefs.cyclones.RData')
+  load(file = "../data/modelled/bleaching.full_3Zone.RData")
+  load(file = "../data/modelled/cots.full_3Zone.RData")
   load(file = "../data/modelled/cots.sum.all_3Zone.RData")
+  load(file = "../data/modelled/cyclones.full_3Zone.RData")
+  load(file = "../data/processed/all.reefs.cyclones.RData")
 }
-## ----end
 
+## Settings
+{
+  finalYear <- 2022
+  labs <- cots.sum.all |>
+    pull(Location) |>
+    levels()
+  labs.shorter <- gsub(" GBR", "", labs)
 
-labs <- cots.sum.all |>
-  pull(Location) |>
-  levels()
-labs.shorter <- gsub(' GBR', '', labs)
+  make_all_banners()
 
-make_all_banners()
+  make_color_palettes()
+  hues <- RColorBrewer::brewer.pal(4, "Blues")
+}
 
-## New analysis
-## ---- helperFunctions
+## Additional heloer functions
 {
   ## ---- calcFreqs
   {
@@ -181,7 +183,7 @@ make_all_banners()
   ## ---- plotEffects
   {
     plotEffects <- function(mod, firstYear,individualReefs=NULL,
-                            ribbonFillColor='blue', points = TRUE,
+                            ribbonFillColor='blue', ribbonAlpha = 1, points = TRUE,
                             type = 1, maxYear = (finalYear)) {
       dat=recover.data.glmmTMB(mod)#mod$frame
       tt <- terms(mod)
@@ -218,15 +220,16 @@ make_all_banners()
           
           if(points) g1 <- g1 + geom_point(data=individualReefs, aes(y=fit), color='grey')
           g1 <- g1 + 
-            geom_boxplot(data=individualReefs, aes(y=fit, group=Time), outlier.shape=NA) +
+            geom_boxplot(data=individualReefs, aes(y=fit, group=Time), color = "grey", outlier.shape=NA) +
             facet_grid(~Zone) +
-            geom_ribbon(aes(ymin=lower, ymax=upper), fill=ribbonFillColor, alpha=0.5, color=NA) +
+            geom_ribbon(aes(ymin=lower, ymax=upper), fill=ribbonFillColor, alpha = ribbonAlpha, color=NA) +
             geom_line(color=ribbonFillColor) +
             scale_x_continuous('', expand=c(0,0)) + #, limits=c(1984,maxYear))+
             coord_cartesian(xlim=c(1984, (finalYear+1))) +
             scale_y_continuous('Pr(impact)', limits=c(0,1.00))+
-            theme_classic()+
-            theme(strip.background = element_blank(), plot.margin=unit(c(0,2,0,1),'lines'),
+            theme_classic(base_size = 7)+
+            theme(strip.background = element_blank(),
+              plot.margin=unit(c(0,2,0,1),'lines'),
               panel.spacing=unit(1,'lines'))
         } else {  ## if need to transpose
           individualReefs <- individualReefs %>% mutate(Col = 1) %>%
@@ -237,24 +240,24 @@ make_all_banners()
             geom_blank()
           if(points) g1 <- g1 + geom_point(data=individualReefs, aes(y=fit), color='grey')
           g1 <- g1 + 
-            geom_boxplot(data=individualReefs, aes(y=fit, group=Time), outlier.shape=NA) +
+            geom_boxplot(data=individualReefs, aes(y=fit, group=Time), color = "grey", outlier.shape=NA) +
             facet_grid(Zone~Col) +
-            geom_ribbon(aes(ymin=lower, ymax=upper), fill=ribbonFillColor, alpha=0.5, color=NA) +
+            geom_ribbon(aes(ymin=lower, ymax=upper), fill=ribbonFillColor, alpha = ribbonAlpha, color=NA) +
             geom_line(color=ribbonFillColor) +
             scale_x_continuous('', expand=c(0,0)) + #, limits=c(1984,2020))+
             coord_cartesian(xlim=c(1984, (finalYear+1))) +
             scale_y_continuous('Pr(impact)', limits=c(0,1.00))+
-            theme_classic()+
+            theme_classic(base_size = 7)+
             theme(strip.background = element_blank(), plot.margin=unit(c(0,2,0,1),'lines'),
               panel.spacing=unit(1,'lines'))
         }
       } else {
         g1=ggplot(newdata, aes(y=fit, x=Date)) +
-          geom_ribbon(aes(ymin=lower, ymax=upper), alpha=0.2, color=NA) +
+          geom_ribbon(aes(ymin=lower, ymax=upper), alpha=ribbonAlpha, color=NA) +
           geom_line() +
           facet_grid(~Zone) +
           scale_y_continuous('Pr(impact)')+
-          theme_classic()
+          theme_classic(base_size = 7)
       }
       g1
     }
@@ -308,11 +311,14 @@ make_all_banners()
         aes(y = y, x = x, label = l),
         hjust = 0, vjust = 1) +
       scale_x_continuous("", breaks = seq(1985, 2020, by = 5),
-        position = "bottom", limits = c(1984.5, (finalYear + 1))) +
-      coord_cartesian(xlim = c(1985, finalYear)) +
+        position = "bottom"
+        ## limits = c(1984.5, (finalYear + 1))
+      ) +
+      coord_cartesian(xlim = c(1985, finalYear), expand = TRUE) +
       scale_y_continuous(expression(phantom("(")), lim = c(0, 1.00)) +
       facet_grid(Zone ~Col, scales="fixed",
         labeller = labeller(Zone = setNames(paste0("", labs.shorter, "\n"), labs))) +
+      theme_classic(base_size = 7)+
       theme(
         panel.border = element_rect(fill = NA, color = "black"),
         axis.title.y = element_blank(),
@@ -327,8 +333,8 @@ make_all_banners()
           linetype = "dashed"),
         plot.margin = unit(c(0, 5, 5, 6), "pt"),
         strip.text.x = element_blank(),
-        strip.text = element_text(margin = margin(l = 0.5, r = 0.5,
-          unit = "lines"), size = 20,
+        strip.text = element_text(margin = margin(l = 0.25, r = 0.25,
+          unit = "lines"), size = rel(2.5),
           lineheight = 0.5, face = "bold",
           hjust = 0.9, vjust = 0),
         strip.background = element_rect(fill = hues[2],
@@ -401,7 +407,6 @@ make_all_banners()
 ## ----end
 
 }
-## ----end
 
 dist.table <- list()
 
@@ -462,7 +467,10 @@ dist.table <- list()
       d1_2021 <- plotEffects(cyclones.severe.glmmTMB,
         firstYear = min(cyclones.binary$REPORT_YEAR),
         individualReefs = df,
-        ribbonFillColor = brewer_pal(palette = "Blues")(4)[4],
+        ## ribbonFillColor = brewer_pal(palette = "Blues")(4)[4],
+        ## ribbonFillColor = brewer_pal(palette = "YlGnBu")(3)[2],
+        ribbonFillColor = cyclone_palette[3],
+        ribbonAlpha = 1,
         points = FALSE, type = 2
       )
       g.severe.cyclones_2021 <- d1_2021
@@ -542,7 +550,8 @@ dist.table <- list()
 
       
       cots.severe.glmmTMB <-
-        glmmTMB(COTSsevere ~ time * Zone + (1 | REEF_NAME), # + ar1(-1+time|REEF_NAME),
+        glmmTMB(COTScatAO ~ time * Zone + (1 | REEF_NAME), # + ar1(-1+time|REEF_NAME),
+        ## glmmTMB(COTSsevere ~ time * Zone + (1 | REEF_NAME), # + ar1(-1+time|REEF_NAME),
           data = cots.binary,
           family = binomial()
         )
@@ -567,12 +576,16 @@ dist.table <- list()
         dplyr::select(Disturbance, Stat, everything())  
 
       df <- modelEachReef(cots.severe.glmmTMB,
-        form = COTSsevere ~ time
+        form = COTScatAO ~ time
+        ## form = COTSsevere ~ time
       )
       d1_2021 <- plotEffects(cots.severe.glmmTMB,
         firstYear = min(cots.binary$REPORT_YEAR),
         individualReefs = df,
-        brewer_pal(palette = "Greens")(3)[3],
+        ## brewer_pal(palette = "Greens")(3)[3],
+        ## ribbonFillColor = brewer_pal(palette = "YlGnBu")(3)[3],
+        ribbonFillColor = cots_palette[2],
+        ribbonAlpha = 0.5,
         points = FALSE, type = 2
       )
       g.severe.cots_2021 <- d1_2021
@@ -657,7 +670,10 @@ dist.table <- list()
       d1_2021 <- plotEffects(bleaching.severe.glmmTMB,
         firstYear = min(bleaching.binary$REPORT_YEAR),
         individualReefs = df,
-        brewer_pal(palette = "Reds")(5)[5], points = FALSE, type = 2
+        ## brewer_pal(palette = "Reds")(5)[5], points = FALSE, type = 2
+        ## ribbonFillColor = brewer_pal(palette = "YlGnBu")(3)[1],
+        ribbonFillColor = bleaching_palette[5],
+        points = FALSE, type = 2
       )
       g.severe.bleaching_2021 = d1_2021
       save(g.severe.bleaching_2021, file='../data/modelled/g.severe.bleaching_2021.RData')
@@ -696,45 +712,52 @@ dist.table <- list()
       g.severe.bleaching_2021.2 = d1_2021
       save(g.severe.bleaching_2021, file="../data/modelled/g.severe.bleaching_2021.2.RData")
     }
-    ## ----end
   }
 }
 
 ## ---- Compilation Plots
 {
   {
-    hues <- RColorBrewer::brewer.pal(4, "Blues")
-    load(file = '../data/modelled/g.severe.bleaching_2021.RData')
-    load(file = '../data/modelled/g.severe.cots_2021.RData')
-    load(file = '../data/modelled/g.severe.cyclones_2021.RData')
+    load(file = "../data/modelled/g.severe.bleaching_2021.RData")
+    load(file = "../data/modelled/g.severe.cots_2021.RData")
+    load(file = "../data/modelled/g.severe.cyclones_2021.RData")
 
     g.severe.bleaching1 <- format_plots(g.severe.bleaching_2021, sublabel = "(a)")
     g.severe.bleaching1 |> grid.draw()
 
-    g.severe.cots1 <- format_plots(g.AO.cots_2021, sublabel = "(b)")
+    g.severe.cots1 <- format_plots(g.severe.cots_2021, sublabel = "(b)")
     g.severe.cots1 |> grid.draw()
 
     g.severe.cyclones1 <- format_plots(g.severe.cyclones_2021, sublabel = "(c)")
     g.severe.cyclones1 |> grid.draw()
 
     gplot <- combine_panels(g.severe.bleaching1, g.severe.cots1, g.severe.cyclones1)
+    gplot |> grid.draw()
     gplot <- add_strip_thumbs(gplot)
 
     gplot <- patchwork::wrap_plots(
       textGrob(expression(Probability ~ of ~ being ~ impacted ~ phantom("(")),
-        just = "centre", rot = 90, gp = gpar(fontsize = 16)
+        just = "centre", rot = 90, gp = gpar(fontsize = 12)
       ),
       wrap_plots(gplot, ncol = 1),
       widths = c(0.2, 10), ncol = 2
     )
 
     ggsave(
-      file = "../outputs/figures/Disturbances_severe_compilation_newA_2021.pdf",
-      gplot, width = 9, height = 7
+      ## file = "../outputs/figures/Disturbances_severe_compilation_newA_2021.pdf",
+      file = "../outputs/figures/figure_3.pdf",
+      gplot,
+      width = 18, height = 18*(7/9), units = "cm"
     )
     ggsave(
-      file = "../outputs/figures/Disturbances_severe_compilation_newA_2021.png",
-      gplot, width = 9, height = 7, dpi = 600
+      ## file = "../outputs/figures/Disturbances_severe_compilation_newA_2021.pdf",
+      file = "../outputs/figures/figure_3.png",
+      gplot,
+      width = 18, height = 18*(7/9), units = "cm", dpi = 600
     )
+    ## ggsave(
+    ##   file = "../outputs/figures/Disturbances_severe_compilation_newA_2021.png",
+    ##   gplot, width = 9, height = 7, dpi = 600
+    ## )
   }
 }

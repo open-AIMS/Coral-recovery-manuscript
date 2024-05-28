@@ -171,10 +171,26 @@ make_all_banners()
     )
   )
 
+  ## ggsave(
+  ##   file = paste0(
+  ##     "../outputs/figures/threePanels.Bars_Stacked_",
+  ##     model_source, "_", ifelse(include_n, "with_n", ""), ".pdf"
+  ##   ),
+  ##   gg,
+  ##   width = 8.5, height = 8.5 * (9/5), units = "cm",
+  ## )
+
+  ## ggsave(
+  ##   file = paste0(
+  ##     "../outputs/figures/threePanels.Bars_Stacked_",
+  ##     model_source, "_", ifelse(include_n, "with_n", ""), ".png"
+  ##   ),
+  ##   gg,
+  ##   width = 8.5, height = 8.5 * (9/5), units = "cm", dpi = 600
+  ## )
   ggsave(
     file = paste0(
-      "../outputs/figures/threePanels.Bars_Stacked_",
-      model_source, "_", ifelse(include_n, "with_n", ""), ".pdf"
+      "../outputs/figures/figure_4.pdf"
     ),
     gg,
     width = 8.5, height = 8.5 * (9/5), units = "cm",
@@ -182,22 +198,10 @@ make_all_banners()
 
   ggsave(
     file = paste0(
-      "../outputs/figures/threePanels.Bars_Stacked_",
-      model_source, "_", ifelse(include_n, "with_n", ""), ".png"
+      "../outputs/figures/figure_4.png"
     ),
     gg,
     width = 8.5, height = 8.5 * (9/5), units = "cm", dpi = 600
   )
-  ## png(
-  ##   file = paste0(
-  ##     "../outputs/figures/threePanels.Bars_Stacked_",
-  ##     model_source, "_", ifelse(include_n, "with_n", ""), ".png"
-  ##   ),
-  ##   width = 5, height = 9, units = "in", res = 300
-  ## )
-  ## grid.draw(gg)
-  ## dev.off()
-
-
   
 }

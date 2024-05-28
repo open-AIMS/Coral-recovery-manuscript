@@ -14,6 +14,7 @@ finalYear <- 2022
 
 hues <- RColorBrewer::brewer.pal(4, "Blues")
 make_all_banners()
+make_color_palettes()
 ## Generate the banner
 {
   aus <- oz::ozRegion(sections = c(3, 11:13))
@@ -132,13 +133,21 @@ make_all_banners()
     disturbance_bar_plot(
       var = COTS.p,
       var_cat = COTScat,
-      xoffset = -0.3
+      xoffset = -0.3,
+      bar_col = NA
+      ## bar_col = "black"
     ) +
-    scale_fill_manual("COTS outbreak status", breaks = c("IO","AO"),
+    scale_fill_manual("COTS outbreak status",
+      breaks = c("IO", "AO"),
       labels = c("IO", "AO"),
-      values = scales:::brewer_pal(palette = "Greens")(3)[-1]) 
+      ## values = scales:::brewer_pal(palette = "Greens")(3)[-1])
+      ## values = generate_tints(scales::brewer_pal(palette = "YlGnBu")(3)[1], 3)[-1]
+      ## values = generate_tints(viridis_pal()(3)[3], 3)[-1]
+      ## values = generate_tints(viridis_pal()(3)[2], 3)[-1]
+      values = cots_palette
+    ) 
   gcots
-
+  
   ## gcots <-
   ##   cots.dat |> 
   ##   ggplot(aes(y = COTS.p, x = REPORT_YEAR - 0.3)) +
@@ -204,10 +213,13 @@ make_all_banners()
         Location == "Northern GBR" ~  "b", Location == "Central GBR" ~  "d", Location == "Southern GBR" ~ "e"))
     ) +
     facet_wrap(Location~., ncol =  1, strip.position =  "right", scales='free_x', labeller=labeller(Location=setNames(paste0("", labs.shorter, "\n"), labs))) +
-    theme(panel.spacing.y = unit(10, 'pt'),
+    theme(
+      panel.spacing.y = unit(5, 'pt'),
       plot.title =  element_blank(),
-      axis.title.y=element_text(size=rel(1.5), margin=margin(r=1,unit='lines')),
-      axis.text.x=element_text(size=rel(1.5)), axis.title.x=element_blank(),
+      axis.title.y=element_text(size=rel(1.5),
+        margin=margin(r=1,unit='lines')),
+      axis.text.x=element_text(size=rel(1.5)),
+      axis.title.x=element_blank(),
       axis.text.y=element_text(size=rel(1.5)),
       plot.margin=unit(c(0,0,2,0),'pt'),
       panel.spacing.x=unit(1,'pt') 
@@ -237,11 +249,19 @@ make_all_banners()
     disturbance_bar_plot(
       var = BLEACHING.p,
       var_cat = BLEACHINGcat,
-      xoffset = 0.3
+      xoffset = 0.3,
+      bar_col = NA
+      ## bar_col = "black"
     ) +
-    scale_fill_manual("Bleaching severity", breaks = c(1, 2, 3, 4, 5),
+    scale_fill_manual("Bleaching severity",
+      breaks = c(1, 2, 3, 4, 5),
       labels = c(1, 2, 3, 4, 5),
-      values = c(scales::brewer_pal(palette = "Reds")(6)[-1])) 
+      ## values = generate_tints(scales::brewer_pal(palette = "YlGnBu")(3)[2], 6)[-1]
+      ## values = c(scales::brewer_pal(palette = "Reds")(6)[-1])
+      ## values = generate_tints(viridis_pal()(3)[1], 6)[-1]
+      ## values = generate_tints(viridis_pal(option = "turbo")(3)[1], 6)[-1]
+      values = bleaching_palette
+    ) 
   gbleaching 
 
   ## gbleaching <-
@@ -298,7 +318,8 @@ make_all_banners()
         Location == "Northern GBR" ~  "b", Location == "Central GBR" ~  "d", Location == "Southern GBR" ~ "e"))
     ) +
     facet_wrap(Location~., ncol =  1, strip.position =  "right", scales='free_x', labeller=labeller(Location=setNames(paste0("", labs.shorter, "\n"), labs))) +
-    theme(panel.spacing.y = unit(10, 'pt'),
+    theme(
+      panel.spacing.y = unit(5, 'pt'),
       plot.title =  element_blank(),
       axis.title.y=element_text(size=rel(1.5), margin=margin(r=1,unit='lines')),
       axis.text.x=element_text(size=rel(1.5)), axis.title.x=element_blank(),
@@ -333,11 +354,19 @@ make_all_banners()
     disturbance_bar_plot(
       var = CYCLONE.p,
       var_cat = CYCLONEcat,
-      xoffset = 0
+      xoffset = 0,
+      bar_col = NA
+      ## bar_col = "black"
     ) +
-    scale_fill_manual("Cyclone severity", breaks = c(1, 2, 3),
+    scale_fill_manual("Cyclone severity",
+      breaks = c(1, 2, 3),
       labels = c(1, 2, 3),
-      values = c(scales::brewer_pal(palette = "Blues")(4)[-1])) 
+      ## values = generate_tints(scales::brewer_pal(palette = "YlGnBu")(3)[3], 4)[-1]
+      ## values = c(scales::brewer_pal(palette = "Blues")(4)[-1])
+      ## values = generate_tints(viridis_pal()(3)[2], 4)[-1]
+      ## values = generate_tints(viridis_pal(option = "turbo")(3)[3], 4)[-1]
+      values = cyclone_palette
+    ) 
 
   ## gcyclones <-
   ##   cyclones.dat |>
@@ -384,7 +413,8 @@ make_all_banners()
   
   ggcyclones = gcyclones + theme(panel.background=element_blank(), legend.justification = c(0.6, 0.5), legend.direction = 'horizontal') + ggtitle('a)')+
     facet_grid(Location~., scales='fixed', labeller=labeller(Location=setNames(paste0("", labs.shorter, "\n"), labs)))+
-    theme(panel.spacing.y = unit(15, 'pt')) +
+    theme(
+      panel.spacing.y = unit(5, 'pt')) +
     guides(fill = guide_legend(title.position = 'top'))
 }
 
@@ -423,46 +453,46 @@ make_all_banners()
  }
 
 {
-  banner_thumb_v <-
-    ggplot(aus_sf) +
-    geom_sf(data = spatial_3Zone_sf, fill = NA, colour = "black", size = 0.2) +
-    theme_classic() +
-    theme(
-      panel.background = element_rect(fill = NA),
-      axis.text.y = element_blank(),
-      axis.text.x = element_blank(),
-      axis.title.y = element_blank(),
-      axis.title.x = element_blank(),
-      axis.ticks = element_blank(),
-      axis.line = element_blank(),
-      plot.background = element_blank(),
-      panel.spacing = unit(0, "pt"),
-      plot.margin = unit(c(0, 0, 0, 0), "pt")
-    )
+  ## banner_thumb_v <-
+  ##   ggplot(aus_sf) +
+  ##   geom_sf(data = spatial_3Zone_sf, fill = NA, colour = "black", size = 0.2) +
+  ##   theme_classic() +
+  ##   theme(
+  ##     panel.background = element_rect(fill = NA),
+  ##     axis.text.y = element_blank(),
+  ##     axis.text.x = element_blank(),
+  ##     axis.title.y = element_blank(),
+  ##     axis.title.x = element_blank(),
+  ##     axis.ticks = element_blank(),
+  ##     axis.line = element_blank(),
+  ##     plot.background = element_blank(),
+  ##     panel.spacing = unit(0, "pt"),
+  ##     plot.margin = unit(c(0, 0, 0, 0), "pt")
+  ##   )
 
-  banner_thumb_northern_v <-
-    banner_thumb_v +
-    geom_sf(data = spatial_3Zone_sf[1, ], fill = hues[4], color = NA) +
-    geom_sf(data = spatial_3Zone_sf[1, ], fill = NA, color = "black") +
-    geom_sf(fill = "white", color = hues[4]) +
-    coord_sf() +
-    theme(plot.margin = unit(c(2, 0, 100, 0), "pt"))
+  ## banner_thumb_northern_v <-
+  ##   banner_thumb_v +
+  ##   geom_sf(data = spatial_3Zone_sf[1, ], fill = hues[4], color = NA) +
+  ##   geom_sf(data = spatial_3Zone_sf[1, ], fill = NA, color = "black") +
+  ##   geom_sf(fill = "white", color = hues[4]) +
+  ##   coord_sf() +
+  ##   theme(plot.margin = unit(c(2, 0, 100, 0), "pt"))
 
-  banner_thumb_central_v <-
-    banner_thumb_v +
-    geom_sf(data = spatial_3Zone_sf[2, ], fill = hues[4], color = NA) +
-    geom_sf(data = spatial_3Zone_sf[2, ], fill = NA, color = "black") +
-    geom_sf(fill = "white", color = hues[4]) +
-    coord_sf() +
-    theme(plot.margin = unit(c(2, 0, 100, 0), "pt"))
+  ## banner_thumb_central_v <-
+  ##   banner_thumb_v +
+  ##   geom_sf(data = spatial_3Zone_sf[2, ], fill = hues[4], color = NA) +
+  ##   geom_sf(data = spatial_3Zone_sf[2, ], fill = NA, color = "black") +
+  ##   geom_sf(fill = "white", color = hues[4]) +
+  ##   coord_sf() +
+  ##   theme(plot.margin = unit(c(2, 0, 100, 0), "pt"))
 
-  banner_thumb_southern_v <-
-    banner_thumb_v +
-    geom_sf(data = spatial_3Zone_sf[3, ], fill = hues[4], color = NA) +
-    geom_sf(data = spatial_3Zone_sf[3, ], fill = NA, color = "black") +
-    geom_sf(fill = "white", color = hues[4]) +
-    coord_sf() +
-    theme(plot.margin = unit(c(2, 0, 100, 0), "pt"))
+  ## banner_thumb_southern_v <-
+  ##   banner_thumb_v +
+  ##   geom_sf(data = spatial_3Zone_sf[3, ], fill = hues[4], color = NA) +
+  ##   geom_sf(data = spatial_3Zone_sf[3, ], fill = NA, color = "black") +
+  ##   geom_sf(fill = "white", color = hues[4]) +
+  ##   coord_sf() +
+  ##   theme(plot.margin = unit(c(2, 0, 100, 0), "pt"))
 
   facets <- grep("strip-r-1", gT$layout$name)
   c(subset(gg$layout, grepl("strip-r-1", gg$layout$name), se = t:r))
@@ -481,14 +511,28 @@ make_all_banners()
     gtable_add_grob(gg, ggplotGrob(banner_thumb_southern_v),t=11, l=6, b=11, r=6, name="pic_predator"))
 
   grid::grid.draw(gg_2021)
+  gplot <- patchwork::wrap_plots(gg_2021)
 
-  pdf(file='../outputs/figures/Disturbances_all_no_label_transposed.pdf', width = 7, height = 7*1.05)
-  grid.draw(gg_2021)
-  dev.off()
+  ggsave(
+    ## file = "../outputs/figures/Disturbances_severe_compilation_newA_2021.pdf",
+    file = "../outputs/figures/figure_2.png",
+    gplot,
+    width = 18, height = 18*1.05, units = "cm", dpi = 600
+  )
+  ggsave(
+    ## file = "../outputs/figures/Disturbances_severe_compilation_newA_2021.pdf",
+    file = "../outputs/figures/figure_2.pdf",
+    gplot,
+    width = 18, height = 18*1.05, units = "cm", dpi = 600
+  )
 
-  ## resize to 8.3cm (3.27in) or 3.27x600 = 1960.63
+  ## pdf(file='../outputs/figures/Disturbances_all_no_label_transposed.pdf', width = 7, height = 7*1.05)
+  ## grid.draw(gg_2021)
+  ## dev.off()
+
+  ## ## resize to 8.3cm (3.27in) or 3.27x600 = 1960.63
   
-  system("convert -density 600 ../outputs/figures/Disturbances_all_no_label_transposed.pdf -resize 1960.63x ../outputs/figures/Disturbances_all_no_label_transposed.pdf")
+  ## system("convert -density 600 ../outputs/figures/Disturbances_all_no_label_transposed.pdf -resize 1960.63x ../outputs/figures/Disturbances_all_no_label_transposed.pdf")
   
 
 }

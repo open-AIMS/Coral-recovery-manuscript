@@ -31,8 +31,11 @@ cr_check_packages <- function() {
   require(sf)
   require(patchwork)
   require(glmmTMB)
-  ## require(brms)
+  require(brms)
+  require(rstan)
+  require(DHARMa)
   require(emmeans)
+  require(tidybayes)
 }
 
 
@@ -161,14 +164,15 @@ grobLabel <- function(data, coords) {
                      just=c("left","top"))
 }
 
-disturbance_bar_plot <- function(dat, var = NULL, var_cat = NULL, xoffset = 0) {
+
+disturbance_bar_plot <- function(dat, var = NULL, var_cat = NULL, xoffset = 0, bar_col = NA) {
   var <- enquo(var)
   var_cat <- enquo(var_cat)
   
   dat |>
     ggplot(aes(y = 100 * {{var}}, x = REPORT_YEAR + xoffset)) +
     geom_bar(stat = "identity", position = "stack",
-      aes(fill = {{var_cat}}), width = 0.3, show.legend = TRUE) +
+      aes(fill = {{var_cat}}), color = bar_col, width = 0.3, show.legend = TRUE) +
     facet_grid(Location~., scales = "fixed",
       labeller = labeller(Location = setNames(paste0("", labs, "\n"), labs))) +
     scale_y_continuous(expression(Reefs~impacted~("%")),
@@ -179,36 +183,56 @@ disturbance_bar_plot <- function(dat, var = NULL, var_cat = NULL, xoffset = 0) {
       ## limits = c(1985, 2022.5)) +
       limits = c(1985, 2022.5),
       expand = c(0.02, 0)) +
-    theme_classic() +
-    theme(strip.background = element_rect(fill = hues[2], color = "black",
-      size = 0.5),
+    theme_classic(base_size = 7) +
+    theme(
       panel.border = element_rect(fill = NA, color = "black"),
-      axis.title.y = element_text(size = rel(1.5),
-        margin = margin(l = 0.5, r = 0.5, unit = "lines")),
-      axis.text.x = element_text(size = rel(1.0)),
+      axis.title.y = element_text(size = rel(12/7)),
+      axis.text.x = element_text(size = rel(1.2)),
       axis.title.x = element_blank(),
-      axis.text.y = element_text(size = rel(1.0)),
+      axis.text.y = element_text(size = rel(1.2)),
       panel.grid.minor = element_line(size = 0.1, color = NA),
       panel.grid.major = element_line(size = 0.1, color = "gray70"),
       panel.grid.minor.x = element_line(size = 0.1, color = NA,
         linetype = "dashed"),
       panel.grid.major.x = element_line(size = 0.1, color = "gray70",
         linetype = "dashed"),
-      plot.margin = unit(c(10, 5, 2, 0), "pt"),
-      panel.spacing.x  =  unit(200, "pt"),
-      panel.spacing.y = unit(20, "pt"),
+      ## plot.margin = unit(c(10, 5, 2, 0), "pt"),
+      plot.margin = unit(c(0, 5, 5, 6), "pt"),
+      strip.text.x = element_blank(),
+      strip.background = element_rect(fill = hues[2],
+        color = "black",
+        size = 0.5),
+      ## margin = margin(l = 0.5, r = 0.5, unit = "lines"),
+      panel.spacing.x  =  unit(0, "pt"),
+      panel.spacing.y = unit(10, "pt"),
       legend.position  =   "bottom",
       strip.text = element_text(margin = margin(t = 0.5, b = 0.5,
         l = 0.25, r = 0.25, unit = "lines"),
-        size = 20,
+        size = rel(2.5),
         lineheight = 0.5,
         face = "bold",
         hjust = 0.9,
-        vjust = -1)) +
+        vjust = 0)) +
     guides(fill  =  guide_legend(title.position = "top", title.hjust  =  0.5))
 }
 
+generate_tints <- function(color, n_tints) {
+  tints <- scales::seq_gradient_pal("white", color)(seq(0, 1, length.out = n_tints))
+  return(tints)
+}
 
+make_color_palettes <- function() {
+  bleaching_palette <- generate_tints(palette.colors(n = 10, palette = "Tableau")[3], 6)[-1]
+  cyclone_palette <- generate_tints(palette.colors(n = 10, palette = "Tableau")[1], 4)[-1]
+  ## cots_palette <- generate_tints(palette.colors(n = 10, palette = "Tableau")[10], 3)[-1]
+  cots_palette <- generate_tints(palette.colors(n = 10, palette = "Tableau")[6], 3)[-1]
+  list2env(
+    list(bleaching_palette = bleaching_palette,
+      cyclone_palette = cyclone_palette,
+      cots_palette = cots_palette),
+    env = globalenv()
+  )
+}
 
 make_base_banner <- function(spatial_3Zone) {
   aus <- oz::ozRegion(sections = c(3, 11:13))
@@ -328,7 +352,7 @@ make_banner_thumbs_v <- function(aus_sf, banner_thumb, spatial_3Zone_sf, hues) {
     geom_sf(data = spatial_3Zone_sf[1, ], fill = hues[4], color = NA) +
     geom_sf(data = spatial_3Zone_sf[1, ], fill = NA, color = "black") +
     geom_sf(fill = "white", color = hues[4]) +
-    theme(plot.margin = unit(c(2, 0, 100, 0), "pt"))
+    theme(plot.margin = unit(c(2, 0, 90, 0), "pt"))
 
   banner_thumb_central_v <-
     banner_thumb_v +
@@ -336,7 +360,7 @@ make_banner_thumbs_v <- function(aus_sf, banner_thumb, spatial_3Zone_sf, hues) {
     geom_sf(data = spatial_3Zone_sf[2, ], fill = NA, color = "black") +
     geom_sf(fill = "white", color = hues[4]) +
     coord_sf() +
-    theme(plot.margin = unit(c(2, 0, 100, 0), "pt"))
+    theme(plot.margin = unit(c(2, 0, 90, 0), "pt"))
 
   banner_thumb_southern_v <-
     banner_thumb_v +
@@ -344,7 +368,7 @@ make_banner_thumbs_v <- function(aus_sf, banner_thumb, spatial_3Zone_sf, hues) {
     geom_sf(data = spatial_3Zone_sf[3, ], fill = NA, color = "black") +
     geom_sf(fill = "white", color = hues[4]) +
     coord_sf() +
-    theme(plot.margin = unit(c(2, 0, 100, 0), "pt"))
+    theme(plot.margin = unit(c(2, 0, 90, 0), "pt"))
 
   return(list(
     banner_thumb_v = banner_thumb_v,
@@ -371,3 +395,46 @@ make_all_banners <- function() {
   )
   banner_list_v |> list2env(env = globalenv())
 }
+## ---- make_brms_dharma_res_functions
+make_brms_dharma_res <- function(brms_model, seed = 10, ...) {
+                                        # equivalent to `simulateResiduals(lme4_model, use.u = FALSE)`
+                                        # cores are set to 1 just to ensure reproducibility
+    options(mc.cores = 1)
+    on.exit(options(mc.cores = parallel::detectCores()))
+    response <- brms::standata(brms_model)$Y
+    ndraws <- nrow(as_draws_df(brms_model))
+    manual_preds_brms <- matrix(0, ndraws, nrow(brms_model$data))
+    random_terms <- insight::find_random(
+                                 brms_model, split_nested = TRUE, flatten = TRUE
+                             )
+                                        # for this to have a similar output to `glmmTMB`'s default, we need to
+                                        #   create new levels in the hierarchical variables, so then we can
+                                        #   use `allow_new_levels = TRUE` and `sample_new_levels = "gaussian"` in
+                                        #   `brms::posterior_epred`. This is equivalent to
+                                        #   `simulateResiduals(lme4_model, use.u = FALSE)`. See details in
+                                        #   `lme4:::simulate.merMod` and `glmmTMB:::simulate.glmmTMB`
+                                        ## random_terms <- unlist(str_split(random_terms, ".\\+."))
+  random_terms <- str_subset(random_terms, "\\+", negate = TRUE)
+    new_data <- brms_model$data |>
+        dplyr::mutate(across(
+                   all_of(random_terms), \(x)paste0("NEW_", x) |> as.factor()
+               ))
+    set.seed(seed)
+    brms_sims <- brms::posterior_predict(
+                           brms_model, re_formula = NULL, newdata = new_data,
+                           allow_new_levels = TRUE, sample_new_levels = "gaussian"
+                       ) |>
+        t()
+    fitted_median_brms <- apply(brms_sims, 1, median)
+    ## fitted_median_brms <- apply(
+    ##     t(brms::posterior_epred(brms_model, ndraws = ndraws, re.form = NA)),
+    ##     1,
+    ##     mean)
+    DHARMa::createDHARMa(
+                simulatedResponse = brms_sims,
+                observedResponse = response,
+                fittedPredictedResponse = fitted_median_brms,
+                ...
+            )
+}
+## ----end
