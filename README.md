@@ -18,13 +18,13 @@ from this repository as they only utilize derived data sets that are
 provided herein.
 
 All of the data sources provided in this repository are also provided
-in the associated dryad page (**link**). If wishing to run code in this
-repository, you should move the files into position after cloning a
-local copy of this repository.
+in the associated Zenodo / Dryad page (**link**). If wishing to run
+code in this repository, you should move the files into position after
+cloning a local copy of this repository.
 
 In the following tree, items surrounded by underscores are not
-available in this repo. Further, items surrounded by asterisks are
-only available via dyrad due to their large size.
+available in this repository. Further, items surrounded by asterisks
+are only available via Dyrad due to their large size.
 
 ```
 /root

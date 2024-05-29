@@ -121,7 +121,7 @@ make_all_banners()
           ## size = 20, lineheight = 0.5, face = "bold", hjust = 0.6, vjust = 0.5
           size = rel(20/11), lineheight = 0.5, face = "bold", hjust = 0.6, vjust = 0.5
         ),
-        plot.margin = unit(c(0, 0, 2, 0), "pt"),
+        plot.margin = unit(c(2, 2, 2, 2), "pt"),
         panel.spacing.x = unit(10, "pt")
       )
   

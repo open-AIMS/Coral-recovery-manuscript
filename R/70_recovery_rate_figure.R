@@ -185,12 +185,12 @@ refit_models <- FALSE
   ggsave(
     filename = "../outputs/figures/figure_7.pdf",
     recovery.rate.thru.time.plot,
-    height = 20/1.6, width = 20, units = "cm"
+    height = 18/1.6, width = 18, units = "cm"
   )
 
   ggsave(
     filename = "../outputs/figures/figure_7.png",
     recovery.rate.thru.time.plot,
-    height = 20/1.6, width = 20, units = "cm", dpi = 600
+    height = 18/1.6, width = 18, units = "cm", dpi = 600
   )
 }

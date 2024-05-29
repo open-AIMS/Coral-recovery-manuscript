@@ -25,7 +25,7 @@ cr_check_packages()
   hues <- RColorBrewer::brewer.pal(4, "Blues")
 }
 
-## Additional heloer functions
+## Additional helper functions
 {
   ## ---- calcFreqs
   {
@@ -183,7 +183,7 @@ cr_check_packages()
   ## ---- plotEffects
   {
     plotEffects <- function(mod, firstYear,individualReefs=NULL,
-                            ribbonFillColor='blue', ribbonAlpha = 1, points = TRUE,
+                            ribbonFillColor='blue', ribbonAlpha = 1, ribbonColor = 'blue', points = TRUE,
                             type = 1, maxYear = (finalYear)) {
       dat=recover.data.glmmTMB(mod)#mod$frame
       tt <- terms(mod)
@@ -223,7 +223,7 @@ cr_check_packages()
             geom_boxplot(data=individualReefs, aes(y=fit, group=Time), color = "grey", outlier.shape=NA) +
             facet_grid(~Zone) +
             geom_ribbon(aes(ymin=lower, ymax=upper), fill=ribbonFillColor, alpha = ribbonAlpha, color=NA) +
-            geom_line(color=ribbonFillColor) +
+            geom_line(color=ribbonColor) +
             scale_x_continuous('', expand=c(0,0)) + #, limits=c(1984,maxYear))+
             coord_cartesian(xlim=c(1984, (finalYear+1))) +
             scale_y_continuous('Pr(impact)', limits=c(0,1.00))+
@@ -243,7 +243,7 @@ cr_check_packages()
             geom_boxplot(data=individualReefs, aes(y=fit, group=Time), color = "grey", outlier.shape=NA) +
             facet_grid(Zone~Col) +
             geom_ribbon(aes(ymin=lower, ymax=upper), fill=ribbonFillColor, alpha = ribbonAlpha, color=NA) +
-            geom_line(color=ribbonFillColor) +
+            geom_line(color=ribbonColor) +
             scale_x_continuous('', expand=c(0,0)) + #, limits=c(1984,2020))+
             coord_cartesian(xlim=c(1984, (finalYear+1))) +
             scale_y_continuous('Pr(impact)', limits=c(0,1.00))+
@@ -254,7 +254,7 @@ cr_check_packages()
       } else {
         g1=ggplot(newdata, aes(y=fit, x=Date)) +
           geom_ribbon(aes(ymin=lower, ymax=upper), alpha=ribbonAlpha, color=NA) +
-          geom_line() +
+          geom_line(color = ribbonColor) +
           facet_grid(~Zone) +
           scale_y_continuous('Pr(impact)')+
           theme_classic(base_size = 7)
@@ -421,8 +421,11 @@ dist.table <- list()
         left_join(cyclones.full) |>
         filter(!is.na(CYCLONEcat)) |>
         filter(REPORT_YEAR < (finalYear + 1))
-      ## spread the data so that for each reef/year there is a binary response for each category
-      cyclones.binary <- cyclones.full |>
+      ## spread the data so that for each reef/year there is a binary
+      ## response for each category
+
+      cyclones.binary <-
+        cyclones.full |>
         mutate(CYCLONEcat = as.factor(CYCLONEcat)) |>
         bind_cols() %>% 
         data.frame(model.matrix(~ -1 + CYCLONEcat, data = .)) |>
@@ -469,7 +472,8 @@ dist.table <- list()
         individualReefs = df,
         ## ribbonFillColor = brewer_pal(palette = "Blues")(4)[4],
         ## ribbonFillColor = brewer_pal(palette = "YlGnBu")(3)[2],
-        ribbonFillColor = cyclone_palette[3],
+        ribbonFillColor = cyclone_palette[1],
+        ribbonColor = cyclone_palette[3],
         ribbonAlpha = 1,
         points = FALSE, type = 2
       )
@@ -584,7 +588,8 @@ dist.table <- list()
         individualReefs = df,
         ## brewer_pal(palette = "Greens")(3)[3],
         ## ribbonFillColor = brewer_pal(palette = "YlGnBu")(3)[3],
-        ribbonFillColor = cots_palette[2],
+        ribbonFillColor = cots_palette[1],
+        ribbonColor = cots_palette[2],
         ribbonAlpha = 0.5,
         points = FALSE, type = 2
       )
@@ -672,7 +677,8 @@ dist.table <- list()
         individualReefs = df,
         ## brewer_pal(palette = "Reds")(5)[5], points = FALSE, type = 2
         ## ribbonFillColor = brewer_pal(palette = "YlGnBu")(3)[1],
-        ribbonFillColor = bleaching_palette[5],
+        ribbonFillColor = bleaching_palette[3],
+        ribbonColor = bleaching_palette[5],
         points = FALSE, type = 2
       )
       g.severe.bleaching_2021 = d1_2021

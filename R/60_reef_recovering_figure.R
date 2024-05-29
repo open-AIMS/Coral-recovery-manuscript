@@ -10,6 +10,8 @@ cr_check_packages()
   )
 }
 
+make_color_palettes()
+
 ## Data processing
 {
   ## data wrangling
@@ -100,6 +102,7 @@ cr_check_packages()
 }
 ## Plot a
 {
+  prop.prior.plot <- 
     prop.recovered.prior |>
     filter(!is.na(Region)) |> 
     ggplot(aes(x = recovery.year, y = data4plot,
@@ -111,7 +114,7 @@ cr_check_packages()
     scale_y_continuous("Number of recoveries",
       breaks = c(-20, -15, -10, -5, 0, 5, 10, 15, 20),
       labels = c(20, 15, 10, 5, 0, 5, 10, 15, 20), limits = c(-17, 17)) +
-    scale_fill_manual("", values = c("grey", "white"),
+    scale_fill_manual("", values = c("black", "grey"),
       breaks = c("no", "yes"), labels = c("Partial recovery", "Full recovery")) +
     geom_hline(yintercept = 0) +
     ggtitle("a) Recovery to prior benchmark") +
@@ -143,7 +146,7 @@ cr_check_packages()
       breaks = c(1990, 2000, 2010, 2020)) +
     scale_y_continuous("Number of recoveries",
       breaks = c(-20, -15, -10, -5, 0, 5, 10, 15, 20), labels = c(20, 15, 10, 5, 0, 5, 10, 15, 20), limits = c(-18, 17)) +
-    scale_fill_manual("", values = c("grey", "white"),
+    scale_fill_manual("", values = c("black", "grey"),
       breaks = c("no", "yes"), labels = c("Partial recovery", "Full recovery")) +
     geom_hline(yintercept = 0) +
     ggtitle("b) Recovery to historical benchmark") +
@@ -225,10 +228,4 @@ CCDD"
     height = 20, width = 18, units = "cm", dpi = 600
   )
 }
-
-
-
-
-
-
 
