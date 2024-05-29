@@ -12,18 +12,19 @@ of these input sources are either internal AIMS databases or else
 require extensive context to avoid misuse, access is not provided to
 any input data as part of this repository. However, most of the inputs
 are available for download via Zenodo
-(https://10.5281/zenodo.11375985). However, those files surrounded by
-underscores below can only provided via a request to the senior author
-(m.emslie@aims.gov.au).
+(https://zenodo.org/doi/10.5281/zenodo.11375985). However, those files
+surrounded by underscores below can only provided via a request to the
+senior author (m.emslie@aims.gov.au).
 
 The R scripts (in the `R` folder) that end with `_figure.R` can be
 directly run from this repository as they only utilize derived data
 sets that are provided herein.
 
 All of the data sources provided in this repository are also provided
-in the associated Zenodo (https://10.5281/zenodo.11375985). If wishing
-to run code in this repository, you should move the files into
-position after cloning a local copy of this repository.
+in the associated Zenodo
+(https://zenodo.org/doi/10.5281/zenodo.11375985). If wishing to run
+code in this repository, you should move the files into position after
+cloning a local copy of this repository.
 
 ```
 /root
