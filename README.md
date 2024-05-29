@@ -9,22 +9,21 @@ Code repository associated with analyses and Figures in Emslie et al
 This codebase works in situ when all of the inputs are available /
 accessable and in the correct locations (see file tree below). As some
 of these input sources are either internal AIMS databases or else
-require extensive context to avoid misuse, access is not provided as
-part of this repository. Such access can only provided via a request
-to the senior author (m.emslie@aims.gov.au).
+require extensive context to avoid misuse, access is not provided to
+any input data as part of this repository. However, most of the inputs
+are available for download via Zenodo
+(https://10.5281/zenodo.11375985). However, those files surrounded by
+underscores below can only provided via a request to the senior author
+(m.emslie@aims.gov.au).
 
-Nevertheless, scripts that end with `_figure.R` can be directly run
-from this repository as they only utilize derived data sets that are
-provided herein.
+The R scripts (in the `R` folder) that end with `_figure.R` can be
+directly run from this repository as they only utilize derived data
+sets that are provided herein.
 
 All of the data sources provided in this repository are also provided
-in the associated Zenodo / Dryad page (**link**). If wishing to run
-code in this repository, you should move the files into position after
-cloning a local copy of this repository.
-
-In the following tree, items surrounded by underscores are not
-available in this repository. Further, items surrounded by asterisks
-are only available via Dyrad due to their large size.
+in the associated Zenodo (https://10.5281/zenodo.11375985). If wishing
+to run code in this repository, you should move the files into
+position after cloning a local copy of this repository.
 
 ```
 /root
@@ -47,15 +46,15 @@ are only available via Dyrad due to their large size.
 |   |- spatial
 |   |  |- spatial_3Zone.RData
 |   |- modelled
-|   |  |- *bleach.interval.brm.RData*
-|   |  |- *cots.interval.outbreak.brm.RData*
-|   |  |- *cyclones.interval.brm.RData*
-|   |  |- *mod.northern_brms.beta.ry.disp.RData*
-|   |  |- *mod.central_brms.beta.ry.disp.RData*
-|   |  |- *mod.southern_brms.beta.ry.disp.RData*
-|   |  |- *post.dist.cover.brm.RData*
-|   |  |- *recovery.brm.RData*
-|   |  |- *rel.coral.loss.brm.RData*
+|   |  |- bleach.interval.brm.RData
+|   |  |- cots.interval.outbreak.brm.RData
+|   |  |- cyclones.interval.brm.RData
+|   |  |- mod.northern_brms.beta.ry.disp.RData
+|   |  |- mod.central_brms.beta.ry.disp.RData
+|   |  |- mod.southern_brms.beta.ry.disp.RData
+|   |  |- post.dist.cover.brm.RData
+|   |  |- recovery.brm.RData
+|   |  |- rel.coral.loss.brm.RData
 |- R
 |  |- 00_main.R
 |  |- 10_get_data.R
